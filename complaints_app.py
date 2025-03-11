@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
 import gspread
-import json
 from google.oauth2.service_account import Credentials
 
-# ✅ Load Google Cloud credentials from Streamlit Secrets
-google_creds = json.loads(st.secrets["google"])
+# ✅ Load Google Cloud credentials from Streamlit Secrets (NO json.loads())
+google_creds = st.secrets["google"]
 
 # ✅ Authenticate with Google Sheets API
 scopes = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -39,4 +38,5 @@ if st.button("Load Complaints"):
     data = sheet.get_all_records()
     df = pd.DataFrame(data)
     st.write(df)
+
 
