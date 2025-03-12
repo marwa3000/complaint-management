@@ -2,8 +2,9 @@ import streamlit as st
 import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
+from datetime import datetime  # Import datetime module
 
-# ✅ Load Google Cloud credentials from Streamlit Secrets (NO json.loads())
+# ✅ Load Google Cloud credentials from Streamlit Secrets
 google_creds = st.secrets["google"]
 
 # ✅ Authenticate with Google Sheets API
@@ -25,11 +26,14 @@ product = st.text_input("Product Name")
 severity = st.selectbox("Severity Level", ["High", "Medium", "Low"])
 details = st.text_area("Complaint Details")
 
+# ✅ Get the current date and time
+date_submitted = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # YYYY-MM-DD HH:MM:SS format
+
 if st.button("Submit Complaint"):
     if complaint_id and product and details:
-        new_data = [complaint_id, product, severity, details]
+        new_data = [date_submitted, complaint_id, product, severity, details]
         sheet.append_row(new_data)
-        st.success("✅ Complaint Submitted Successfully!")
+        st.success(f"✅ Complaint Submitted Successfully on {date_submitted}!")
     else:
         st.error("❌ Please fill all required fields!")
 
@@ -38,5 +42,6 @@ if st.button("Load Complaints"):
     data = sheet.get_all_records()
     df = pd.DataFrame(data)
     st.write(df)
+
 
 
